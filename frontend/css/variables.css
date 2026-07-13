@@ -1,0 +1,122 @@
+/* =============================================
+   RUBHI - Design System Variables
+   Dark Luxury Aesthetic
+   ============================================= */
+
+:root {
+  /* ---- Color Palette ---- */
+  --black:        #0a0a0a;
+  --black-2:      #111111;
+  --black-3:      #161616;
+  --black-4:      #1c1c1c;
+  --black-5:      #222222;
+  --surface:      #1a1a1a;
+  --surface-2:    #242424;
+  --surface-3:    #2e2e2e;
+
+  --border:       rgba(255,255,255,0.07);
+  --border-2:     rgba(255,255,255,0.12);
+  --border-hover: rgba(255,255,255,0.22);
+
+  --white:        #ffffff;
+  --white-90:     rgba(255,255,255,0.90);
+  --white-70:     rgba(255,255,255,0.70);
+  --white-50:     rgba(255,255,255,0.50);
+  --white-30:     rgba(255,255,255,0.30);
+  --white-15:     rgba(255,255,255,0.15);
+  --white-08:     rgba(255,255,255,0.08);
+
+  /* ---- Accent ---- */
+  --accent:       #e8d5b0;      /* warm gold/cream — luxury tone */
+  --accent-2:     #c9a96e;      /* deeper gold */
+  --accent-3:     #f5edd8;      /* light cream */
+  --accent-glow:  rgba(232,213,176,0.15);
+
+  /* ---- Status Colors ---- */
+  --green:        #4caf81;
+  --green-bg:     rgba(76,175,129,0.12);
+  --red:          #e05c5c;
+  --red-bg:       rgba(224,92,92,0.12);
+  --yellow:       #e8c56a;
+  --yellow-bg:    rgba(232,197,106,0.12);
+  --blue:         #5b9cf6;
+  --blue-bg:      rgba(91,156,246,0.12);
+
+  /* ---- Typography ---- */
+  --font-display: 'Playfair Display', 'Georgia', serif;
+  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+
+  --text-xs:    11px;
+  --text-sm:    13px;
+  --text-base:  15px;
+  --text-md:    17px;
+  --text-lg:    20px;
+  --text-xl:    24px;
+  --text-2xl:   30px;
+  --text-3xl:   38px;
+  --text-4xl:   52px;
+
+  --weight-light:   300;
+  --weight-regular: 400;
+  --weight-medium:  500;
+  --weight-semi:    600;
+  --weight-bold:    700;
+  --weight-black:   900;
+
+  --leading-tight:  1.2;
+  --leading-snug:   1.4;
+  --leading-normal: 1.6;
+  --leading-loose:  1.8;
+
+  --tracking-tight:  -0.03em;
+  --tracking-normal: -0.01em;
+  --tracking-wide:   0.06em;
+  --tracking-wider:  0.12em;
+
+  /* ---- Spacing ---- */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-8:  32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+  --sp-20: 80px;
+
+  /* ---- Border Radius ---- */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-2xl:  24px;
+  --radius-full: 9999px;
+
+  /* ---- Shadows ---- */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,0.5);
+  --shadow-md:  0 4px 16px rgba(0,0,0,0.6);
+  --shadow-lg:  0 8px 40px rgba(0,0,0,0.7);
+  --shadow-xl:  0 20px 60px rgba(0,0,0,0.8);
+  --shadow-accent: 0 0 30px rgba(232,213,176,0.1);
+
+  /* ---- Layout ---- */
+  --sidebar-width:     240px;
+  --sidebar-collapsed: 72px;
+  --feed-max:          600px;
+  --right-panel:       280px;
+
+  /* ---- Transitions ---- */
+  --transition-fast:   all 0.15s ease;
+  --transition-base:   all 0.25s ease;
+  --transition-slow:   all 0.4s cubic-bezier(0.16,1,0.3,1);
+
+  /* ---- Z-Index ---- */
+  --z-base:    1;
+  --z-above:   10;
+  --z-modal:   100;
+  --z-toast:   200;
+  --z-overlay: 50;
+}

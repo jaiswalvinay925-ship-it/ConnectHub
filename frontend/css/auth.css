@@ -1,0 +1,308 @@
+/* =============================================
+   RUBHI - Auth Pages CSS
+   ============================================= */
+
+/* Auth brand logo */
+.auth-brand-logo {
+  width: 160px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 4px 20px rgba(181,190,78,0.25));
+}
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  padding: var(--sp-6) var(--sp-4);
+  gap: var(--sp-6);
+}
+
+.auth-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  text-align: center;
+}
+
+.auth-logo-icon {
+  width: 56px;
+  height: 56px;
+  background: var(--accent);
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(232, 213, 176, 0.25);
+}
+
+.auth-brand-name {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
+  color: var(--white);
+  letter-spacing: var(--tracking-tight);
+}
+
+.auth-tagline {
+  font-size: var(--text-sm);
+  color: var(--white-30);
+  letter-spacing: var(--tracking-wide);
+}
+
+.auth-card {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2xl);
+  padding: var(--sp-8) var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  box-shadow: var(--shadow-xl);
+}
+
+.auth-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  color: var(--white);
+  letter-spacing: var(--tracking-tight);
+  text-align: center;
+  margin-bottom: var(--sp-1);
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.auth-card .btn-primary {
+  margin-top: var(--sp-2);
+}
+
+.auth-switch {
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--white-30);
+}
+
+.auth-switch a {
+  color: var(--accent);
+  cursor: pointer;
+  font-weight: var(--weight-medium);
+  transition: var(--transition-fast);
+}
+
+.auth-switch a:hover { color: var(--accent-3); }
+
+/* Password toggle button */
+.pw-toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--white-30);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: var(--transition-fast);
+}
+.pw-toggle-btn:hover { color: var(--white-70); }
+
+/* Avatar picker */
+.auth-avatar-picker {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-avatar-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  border: 2px dashed var(--border-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white-30);
+  transition: var(--transition-fast);
+}
+
+.auth-avatar-placeholder:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* =============================================
+   TOGGLE SWITCH
+   ============================================= */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--surface-3);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: var(--transition-base);
+  border: 1px solid var(--border);
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--white-50);
+  border-radius: var(--radius-full);
+  transition: var(--transition-base);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateY(-50%) translateX(20px);
+  background: var(--black);
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: var(--sp-6) var(--sp-4);
+    border-radius: var(--radius-xl);
+  }
+}
+
+/* =============================================
+   GLOWING ROTATING BORDER BUTTON — Login & Register
+   ============================================= */
+
+/* Wrapper that holds the spinning border */
+.glow-btn-wrap {
+  position: relative;
+  border-radius: 10px;
+  padding: 2px;          /* border thickness */
+  background: transparent;
+  margin-top: var(--sp-2);
+}
+
+/* The rotating conic-gradient — spins as a pseudo-element */
+.glow-btn-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 12px;
+  background: conic-gradient(
+    from var(--angle, 0deg),
+    transparent  0deg,
+    transparent  60deg,
+    #b5be4e      80deg,
+    #e8d5b0     100deg,
+    #ffffff      120deg,
+    #e8d5b0     140deg,
+    #b5be4e     160deg,
+    transparent 180deg,
+    transparent 360deg
+  );
+  animation: spin-border 2.5s linear infinite;
+  z-index: 0;
+}
+
+/* Soft glow blur layer behind the button */
+.glow-btn-wrap::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 14px;
+  background: conic-gradient(
+    from var(--angle, 0deg),
+    transparent  0deg,
+    transparent  60deg,
+    rgba(181,190,78,0.6) 100deg,
+    rgba(232,213,176,0.4) 120deg,
+    rgba(181,190,78,0.6) 140deg,
+    transparent 180deg,
+    transparent 360deg
+  );
+  animation: spin-border 2.5s linear infinite;
+  filter: blur(8px);
+  z-index: 0;
+  opacity: 0.8;
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes spin-border {
+  to { --angle: 360deg; }
+}
+
+/* The actual button sits on top of the spinning border */
+.glow-btn-wrap .btn-primary {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  background: #0f0f0f;
+  color: var(--accent);
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 13px 20px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  margin-top: 0;
+}
+
+.glow-btn-wrap .btn-primary:hover {
+  background: rgba(181,190,78,0.1);
+  color: #ffffff;
+  box-shadow: 0 0 20px rgba(181,190,78,0.25) inset;
+}
+
+.glow-btn-wrap .btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* Pause spin on disabled state */
+.glow-btn-wrap .btn-primary:disabled ~ *,
+.glow-btn-wrap:has(.btn-primary:disabled)::before,
+.glow-btn-wrap:has(.btn-primary:disabled)::after {
+  animation-play-state: paused;
+  opacity: 0.4;
+}

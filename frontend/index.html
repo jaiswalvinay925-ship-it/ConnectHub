@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Rubhi - Share your world">
+  <title>SocialHub</title>
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/background.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/components.css">
+  <link rel="stylesheet" href="/css/auth.css">
+  <link rel="stylesheet" href="/css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ============================================================
+       SIDEBAR (app pages)
+       ============================================================ -->
+  <aside class="sidebar" id="main-sidebar" style="display:none">
+    <a class="sidebar-logo" onclick="Router.navigate('home')">
+      <div class="sidebar-logo-icon">
+        <img src="/assets/logo.svg" alt="Rubhi" style="width:36px;height:36px;border-radius:8px;">
+      </div>
+      <span class="sidebar-logo-text">SocialHub</span>
+    </a>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-create-btn">
+        <button class="btn btn-primary btn-full" onclick="Router.navigate('create-post')">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span class="nav-label">Create Post</span>
+        </button>
+      </div>
+
+      <a class="sidebar-nav-item" data-page="home" onclick="Router.navigate('home')">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+        <span class="nav-label">Home</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="search" onclick="Router.navigate('search')">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+        <span class="nav-label">Search</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="messages" onclick="Router.navigate('messages')">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></span>
+        <span class="nav-label">Messages</span>
+      </a>
+      <a class="sidebar-nav-item" data-page="notifications" onclick="Router.navigate('notifications')">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></span>
+        <span class="nav-label">Notifications</span>
+        <span class="nav-badge" data-notif-badge style="display:none"></span>
+      </a>
+      <a class="sidebar-nav-item" data-page="profile" onclick="Router.navigate('profile',{username:Auth.user?.username})">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+        <span class="nav-label">Profile</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a class="sidebar-user" onclick="Router.navigate('profile',{username:Auth.user?.username})">
+        <div id="sidebar-avatar-wrap"></div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="sidebar-name"></div>
+          <div class="sidebar-user-username" id="sidebar-uname"></div>
+        </div>
+      </a>
+      <button class="sidebar-nav-item" onclick="Auth.logout()">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span>
+        <span class="nav-label">Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============================================================
+       TOP BAR (mobile)
+       ============================================================ -->
+  <header class="topbar" id="main-topbar" style="display:none">
+    <img src="/assets/logo.svg" alt="Rubhi" style="height:38px;">
+    <div class="topbar-actions">
+      <button class="btn-icon btn-ghost" onclick="Router.navigate('notifications')">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      </button>
+      <button class="btn-icon btn-ghost" onclick="Router.navigate('messages')">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       MAIN CONTENT WRAPPER
+       ============================================================ -->
+  <div class="main-content" id="main-content">
+
+    <!-- ==================== LOGIN PAGE ==================== -->
+    <div class="page auth-page" id="page-login">
+      <div class="auth-container">
+        <div class="auth-brand">
+          <img src="/assets/logo.svg" alt="Rubhi" class="auth-brand-logo">
+        </div>
+        <div class="auth-card">
+          <h2 class="auth-title">Sign In</h2>
+          <form id="login-form" novalidate>
+            <div class="form-group">
+              <label class="form-label">Username or Email</label>
+              <input id="login-identifier" type="text" class="form-input" placeholder="Enter username or email" autocomplete="username" required>
+            </div>
+            <div class="form-group" style="position:relative">
+              <label class="form-label">Password</label>
+              <input id="login-password" type="password" class="form-input" placeholder="Enter your password" autocomplete="current-password" required>
+              <button type="button" id="login-toggle-pw" class="pw-toggle-btn" aria-label="Toggle password">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <p id="login-error" class="form-error" style="display:none"></p>
+            <div class="glow-btn-wrap">
+              <button type="submit" id="login-submit" class="btn btn-primary btn-full">Sign In</button>
+            </div>
+          </form>
+          <p class="auth-switch">Don't have an account? <a onclick="Router.navigate('register')">Create one</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== REGISTER PAGE ==================== -->
+    <div class="page auth-page" id="page-register">
+      <div class="auth-container">
+        <div class="auth-brand">
+          <img src="/assets/logo.svg" alt="Rubhi" class="auth-brand-logo">
+        </div>
+        <div class="auth-card">
+          <h2 class="auth-title">Create Account</h2>
+          <form id="register-form" novalidate>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-5)">
+              <div class="auth-avatar-picker" onclick="document.getElementById('reg-profile-pic').click()">
+                <img id="reg-pic-preview" src="" alt="" style="display:none;width:80px;height:80px;border-radius:50%;object-fit:cover">
+                <div id="reg-pic-btn" class="auth-avatar-placeholder">
+                  <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+              </div>
+              <span class="text-xs text-muted">Profile Picture (optional)</span>
+              <input id="reg-profile-pic" type="file" accept="image/jpeg,image/png,image/webp" style="display:none">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input id="reg-fullname" type="text" class="form-input" placeholder="Your full name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Username</label>
+              <div style="position:relative">
+                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--white-30);font-size:var(--text-sm)">@</span>
+                <input id="reg-username" type="text" class="form-input" placeholder="username" style="padding-left:28px" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input id="reg-email" type="email" class="form-input" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group" style="position:relative">
+              <label class="form-label">Password</label>
+              <input id="reg-password" type="password" class="form-input" placeholder="Min 6 characters" required>
+              <button type="button" id="reg-toggle-pw" class="pw-toggle-btn" aria-label="Toggle password">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <p id="reg-error" class="form-error" style="display:none"></p>
+            <div class="glow-btn-wrap">
+              <button type="submit" id="reg-submit" class="btn btn-primary btn-full">Create Account</button>
+            </div>
+          </form>
+          <p class="auth-switch">Already have an account? <a onclick="Router.navigate('login')">Sign in</a></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== HOME PAGE ==================== -->
+    <div class="page app-page" id="page-home">
+      <div class="feed-layout">
+        <div class="feed-center">
+          <!-- Stories Row -->
+          <div class="stories-row">
+            <div class="stories-scroll" id="stories-scroll"></div>
+          </div>
+          <!-- Posts Feed -->
+          <div id="feed-posts"></div>
+          <div id="feed-loader" style="display:none;justify-content:center;padding:var(--sp-6)">
+            <span class="spinner spinner-lg"></span>
+          </div>
+        </div>
+        <!-- Right Panel -->
+        <aside class="feed-right">
+          <div id="sidebar-me"></div>
+          <div id="suggestions-list" style="margin-top:var(--sp-6)"></div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ==================== SEARCH PAGE ==================== -->
+    <div class="page app-page" id="page-search">
+      <div style="max-width:640px;margin:0 auto;padding:var(--sp-8) var(--sp-4)">
+        <div class="page-header" style="padding:0 0 var(--sp-4)">
+          <h1 class="page-header-title">Search</h1>
+        </div>
+        <div style="position:relative;margin-bottom:var(--sp-5)">
+          <svg style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--white-30)" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="search-input" type="text" class="form-input" placeholder="Search by username or name…" style="padding-left:44px;font-size:var(--text-base)">
+        </div>
+        <div id="search-results"></div>
+      </div>
+    </div>
+
+    <!-- ==================== CREATE POST PAGE ==================== -->
+    <div class="page app-page" id="page-create-post">
+      <div style="max-width:640px;margin:0 auto;padding:var(--sp-8) var(--sp-4)">
+        <div class="page-header" style="padding:0 0 var(--sp-6)">
+          <h1 class="page-header-title">New Post</h1>
+          <p class="page-header-subtitle">Share up to 10 photos or videos</p>
+        </div>
+        <form id="create-post-form" class="card card-padded">
+          <div class="upload-dropzone" id="post-dropzone">
+            <div class="upload-dropzone-icon">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <p style="font-weight:var(--weight-medium);color:var(--white-70)">Drag photos or videos here</p>
+            <p class="text-sm text-muted">or click to browse — JPG, PNG, WEBP, MP4 · Max 10 files</p>
+            <button type="button" class="btn btn-secondary btn-sm mt-2">Select Files</button>
+          </div>
+          <input id="post-file-input" type="file" accept="image/jpeg,image/png,image/webp,video/mp4" multiple style="display:none">
+          <div id="post-preview-grid" class="upload-preview-grid"></div>
+          <div class="form-group mt-4">
+            <label class="form-label">Caption</label>
+            <textarea id="post-caption" class="form-input form-textarea" placeholder="Write a caption…" rows="4" maxlength="2200"></textarea>
+            <div class="flex justify-between mt-1">
+              <span class="form-hint">Optional · Markdown not supported</span>
+              <span class="char-count" id="post-caption-count">0 / 2200</span>
+            </div>
+          </div>
+          <button type="submit" id="post-submit" class="btn btn-primary btn-full mt-4">Share Post</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ==================== NOTIFICATIONS PAGE ==================== -->
+    <div class="page app-page" id="page-notifications">
+      <div style="max-width:640px;margin:0 auto;padding:var(--sp-8) var(--sp-4)">
+        <div class="flex items-center justify-between mb-6">
+          <h1 class="page-header-title">Notifications</h1>
+          <button id="notif-mark-all" class="btn btn-ghost btn-sm" style="display:none">Mark all read</button>
+        </div>
+        <div class="card" id="notif-list"></div>
+      </div>
+    </div>
+
+    <!-- ==================== PROFILE PAGE ==================== -->
+    <div class="page app-page" id="page-profile" style="width:100%;min-height:100vh">
+      <div class="profile-content" style="width:100%;min-height:100vh;display:flex;justify-content:center"></div>
+    </div>
+
+    <!-- ==================== MESSAGES PAGE ==================== -->
+    <div class="page app-page" id="page-messages" style="height:calc(100vh - 0px)">
+      <div style="display:flex;height:100%;overflow:hidden">
+        <!-- Conversation List -->
+        <div style="width:320px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden">
+          <div style="padding:var(--sp-5) var(--sp-4);border-bottom:1px solid var(--border)">
+            <h2 style="font-family:var(--font-display);font-size:var(--text-lg);font-weight:var(--weight-bold)">Messages</h2>
+          </div>
+          <div id="conv-list" style="flex:1;overflow-y:auto"></div>
+        </div>
+        <!-- Chat Panel -->
+        <div id="chat-panel" style="flex:1;display:none;flex-direction:column;overflow:hidden">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--border)">
+            <a id="chat-header-link" style="cursor:pointer;display:flex;align-items:center;gap:10px;flex:1;text-decoration:none">
+              <span id="chat-header-avatar"></span>
+              <div>
+                <div id="chat-user-name" style="font-weight:600;color:var(--white);font-size:15px"></div>
+                <div id="chat-username" style="font-size:12px;color:var(--white-30)"></div>
+              </div>
+            </a>
+            <div id="chat-header-right" style="display:flex;align-items:center;gap:8px"></div>
+          </div>
+          <div id="messages-area" style="flex:1;overflow-y:auto;padding:12px 0"></div>
+          <div id="chat-input-area" style="padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px">
+            <button id="chat-media-btn" class="btn-icon btn-ghost" title="Send photo/video">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </button>
+            <input id="chat-media-input" type="file" accept="image/jpeg,image/png,image/webp,video/mp4" style="display:none">
+            <input id="chat-input" type="text" class="form-input" placeholder="Message…" style="flex:1" autocomplete="off">
+            <button id="chat-send-btn" class="btn btn-primary btn-sm" disabled>Send</button>
+          </div>
+        </div>
+        <div id="chat-empty" style="flex:1;display:flex;align-items:center;justify-content:center">
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            </div>
+            <p class="empty-state-title">Your Messages</p>
+            <p class="empty-state-desc">Select a conversation or search for someone to message.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== ADMIN PAGES ==================== -->
+    <!-- Admin Dashboard -->
+    <div class="page" id="page-admin">
+      <div class="admin-shell">
+        <aside class="admin-sidebar">
+          <div class="admin-sidebar-header">
+            <img src="/assets/logo.svg" alt="Rubhi" style="width:36px;height:36px;">
+            <span class="sidebar-logo-text">Rubhi Admin</span>
+          </div>
+          <nav class="admin-nav">
+            <a class="admin-nav-item active" data-page="admin" onclick="Router.navigate('admin')">📊 Dashboard</a>
+            <a class="admin-nav-item" data-page="admin-users" onclick="Router.navigate('admin-users')">👥 Users</a>
+            <a class="admin-nav-item" data-page="admin-posts" onclick="Router.navigate('admin-posts')">🖼 Posts</a>
+            <a class="admin-nav-item" data-page="admin-comments" onclick="Router.navigate('admin-comments')">💬 Comments</a>
+            <a class="admin-nav-item" data-page="admin-stories" onclick="Router.navigate('admin-stories')">⭕ Stories</a>
+            <a class="admin-nav-item" data-page="admin-messages" onclick="Router.navigate('admin-messages')">✉️ Messages</a>
+            <a class="admin-nav-item" data-page="admin-verification" onclick="Router.navigate('admin-verification')">✅ Verification</a>
+            <a class="admin-nav-item" data-page="admin-reports" onclick="Router.navigate('admin-reports')">🚩 Reports</a>
+            <a class="admin-nav-item" data-page="admin-settings" onclick="Router.navigate('admin-settings')">⚙️ Settings</a>
+          </nav>
+          <div class="admin-sidebar-footer">
+            <button class="admin-nav-item" style="width:100%;text-align:left;border:none;cursor:pointer" onclick="Auth.logout()">🚪 Logout</button>
+            <a class="admin-nav-item" onclick="Router.navigate('home')">← Back to App</a>
+          </div>
+        </aside>
+        <main class="admin-main">
+          <div class="admin-page-header">
+            <h1 class="admin-page-title">Dashboard</h1>
+            <p class="admin-page-subtitle">Platform overview</p>
+          </div>
+          <div class="admin-stats-grid">
+            <div class="admin-stat-card"><div class="admin-stat-icon" style="background:var(--blue-bg);color:var(--blue)">👥</div><div><div class="admin-stat-value" id="stat-users">—</div><div class="admin-stat-label">Total Users</div><div class="admin-stat-sub" id="stat-new-users" style="color:var(--green);font-size:var(--text-xs);margin-top:2px">+0 this week</div></div></div>
+            <div class="admin-stat-card"><div class="admin-stat-icon" style="background:var(--accent-glow);color:var(--accent)">🖼</div><div><div class="admin-stat-value" id="stat-posts">—</div><div class="admin-stat-label">Total Posts</div></div></div>
+            <div class="admin-stat-card"><div class="admin-stat-icon" style="background:var(--green-bg);color:var(--green)">💬</div><div><div class="admin-stat-value" id="stat-comments">—</div><div class="admin-stat-label">Total Comments</div></div></div>
+            <div class="admin-stat-card"><div class="admin-stat-icon" style="background:var(--yellow-bg);color:var(--yellow)">⭕</div><div><div class="admin-stat-value" id="stat-stories">—</div><div class="admin-stat-label">Active Stories</div></div></div>
+            <div class="admin-stat-card"><div class="admin-stat-icon" style="background:var(--blue-bg);color:var(--blue)">✉️</div><div><div class="admin-stat-value" id="stat-messages">—</div><div class="admin-stat-label">Total Messages</div></div></div>
+            <div class="admin-stat-card"><div class="admin-stat-icon" style="background:var(--red-bg);color:var(--red)">🚩</div><div><div class="admin-stat-value" id="stat-reports">—</div><div class="admin-stat-label">Pending Reports</div></div></div>
+            <div class="admin-stat-card"><div class="admin-stat-icon" style="background:var(--accent-glow);color:var(--accent)">✅</div><div><div class="admin-stat-value" id="stat-verifications">—</div><div class="admin-stat-label">Pending Verifications</div></div></div>
+          </div>
+          <div class="admin-quick-actions">
+            <h3 class="admin-section-title">Quick Actions</h3>
+            <div class="flex gap-3 flex-wrap">
+              <button class="btn btn-secondary btn-sm" onclick="Router.navigate('admin-users')">Manage Users</button>
+              <button class="btn btn-secondary btn-sm" onclick="Router.navigate('admin-posts')">Manage Posts</button>
+              <button class="btn btn-secondary btn-sm" onclick="Router.navigate('admin-verification')">Review Verifications</button>
+              <button class="btn btn-secondary btn-sm" onclick="Router.navigate('admin-reports')">Review Reports</button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Admin Users -->
+    <div class="page" id="page-admin-users">
+      <div class="admin-shell">
+        <aside class="admin-sidebar">
+          <div class="admin-sidebar-header"><div class="admin-logo-img"><img src="/assets/logo.svg" alt="Rubhi" style="width:36px;height:36px;"></div><span class="sidebar-logo-text">Rubhi Admin</span></div>
+          <nav class="admin-nav">
+            <a class="admin-nav-item" data-page="admin" onclick="Router.navigate('admin')">📊 Dashboard</a>
+            <a class="admin-nav-item active" data-page="admin-users" onclick="Router.navigate('admin-users')">👥 Users</a>
+            <a class="admin-nav-item" data-page="admin-posts" onclick="Router.navigate('admin-posts')">🖼 Posts</a>
+            <a class="admin-nav-item" data-page="admin-comments" onclick="Router.navigate('admin-comments')">💬 Comments</a>
+            <a class="admin-nav-item" data-page="admin-stories" onclick="Router.navigate('admin-stories')">⭕ Stories</a>
+            <a class="admin-nav-item" data-page="admin-messages" onclick="Router.navigate('admin-messages')">✉️ Messages</a>
+            <a class="admin-nav-item" data-page="admin-verification" onclick="Router.navigate('admin-verification')">✅ Verification</a>
+            <a class="admin-nav-item" data-page="admin-reports" onclick="Router.navigate('admin-reports')">🚩 Reports</a>
+            <a class="admin-nav-item" data-page="admin-settings" onclick="Router.navigate('admin-settings')">⚙️ Settings</a>
+          </nav>
+          <div class="admin-sidebar-footer"><button class="admin-nav-item" style="width:100%;text-align:left;border:none;cursor:pointer" onclick="Auth.logout()">🚪 Logout</button><a class="admin-nav-item" onclick="Router.navigate('home')">← Back to App</a></div>
+        </aside>
+        <main class="admin-main">
+          <div class="admin-page-header">
+            <h1 class="admin-page-title">Users</h1>
+            <div style="display:flex;gap:var(--sp-3);align-items:center">
+              <input type="text" class="form-input" style="width:240px" placeholder="Search users…" oninput="AdminUsers.load(1,this.value)" id="admin-users-search">
+            </div>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead><tr><th>#ID</th><th>Pic</th><th>Name</th><th>Username</th><th>Email</th><th>Followers</th><th>Following</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+              <tbody id="admin-users-tbody"></tbody>
+            </table>
+          </div>
+          <div id="admin-users-pagination"></div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Admin Posts -->
+    <div class="page" id="page-admin-posts">
+      <div class="admin-shell">
+        <aside class="admin-sidebar">
+          <div class="admin-sidebar-header"><div class="admin-logo-img"><img src="/assets/logo.svg" alt="Rubhi" style="width:36px;height:36px;"></div><span class="sidebar-logo-text">Rubhi Admin</span></div>
+          <nav class="admin-nav">
+            <a class="admin-nav-item" data-page="admin" onclick="Router.navigate('admin')">📊 Dashboard</a>
+            <a class="admin-nav-item" data-page="admin-users" onclick="Router.navigate('admin-users')">👥 Users</a>
+            <a class="admin-nav-item active" data-page="admin-posts" onclick="Router.navigate('admin-posts')">🖼 Posts</a>
+            <a class="admin-nav-item" data-page="admin-comments" onclick="Router.navigate('admin-comments')">💬 Comments</a>
+            <a class="admin-nav-item" data-page="admin-stories" onclick="Router.navigate('admin-stories')">⭕ Stories</a>
+            <a class="admin-nav-item" data-page="admin-messages" onclick="Router.navigate('admin-messages')">✉️ Messages</a>
+            <a class="admin-nav-item" data-page="admin-verification" onclick="Router.navigate('admin-verification')">✅ Verification</a>
+            <a class="admin-nav-item" data-page="admin-reports" onclick="Router.navigate('admin-reports')">🚩 Reports</a>
+            <a class="admin-nav-item" data-page="admin-settings" onclick="Router.navigate('admin-settings')">⚙️ Settings</a>
+          </nav>
+          <div class="admin-sidebar-footer"><button class="admin-nav-item" style="width:100%;text-align:left;border:none;cursor:pointer" onclick="Auth.logout()">🚪 Logout</button><a class="admin-nav-item" onclick="Router.navigate('home')">← Back to App</a></div>
+        </aside>
+        <main class="admin-main">
+          <div class="admin-page-header"><h1 class="admin-page-title">Posts</h1></div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead><tr><th>#ID</th><th>Thumbnail</th><th>Owner</th><th>Media</th><th>Likes</th><th>Comments</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody id="admin-posts-tbody"></tbody>
+            </table>
+          </div>
+          <div id="admin-posts-pagination"></div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Admin Comments -->
+    <div class="page" id="page-admin-comments">
+      <div class="admin-shell">
+        <aside class="admin-sidebar">
+          <div class="admin-sidebar-header"><div class="admin-logo-img"><img src="/assets/logo.svg" alt="Rubhi" style="width:36px;height:36px;"></div><span class="sidebar-logo-text">Rubhi Admin</span></div>
+          <nav class="admin-nav">
+            <a class="admin-nav-item" data-page="admin" onclick="Router.navigate('admin')">📊 Dashboard</a>
+            <a class="admin-nav-item" data-page="admin-users" onclick="Router.navigate('admin-users')">👥 Users</a>
+            <a class="admin-nav-item" data-page="admin-posts" onclick="Router.navigate('admin-posts')">🖼 Posts</a>
+            <a class="admin-nav-item active" data-page="admin-comments" onclick="Router.navigate('admin-comments')">💬 Comments</a>
+            <a class="admin-nav-item" data-page="admin-stories" onclick="Router.navigate('admin-stories')">⭕ Stories</a>
+            <a class="admin-nav-item" data-page="admin-messages" onclick="Router.navigate('admin-messages')">✉️ Messages</a>
+            <a class="admin-nav-item" data-page="admin-verification" onclick="Router.navigate('admin-verification')">✅ Verification</a>
+            <a class="admin-nav-item" data-page="admin-reports" onclick="Router.navigate('admin-reports')">🚩 Reports</a>
+            <a class="admin-nav-item" data-page="admin-settings" onclick="Router.navigate('admin-settings')">⚙️ Settings</a>
+          </nav>
+          <div class="admin-sidebar-footer"><button class="admin-nav-item" style="width:100%;text-align:left;border:none;cursor:pointer" onclick="Auth.logout()">🚪 Logout</button><a class="admin-nav-item" onclick="Router.navigate('home')">← Back to App</a></div>
+        </aside>
+        <main class="admin-main">
+          <div class="admin-page-header"><h1 class="admin-page-title">Comments</h1></div>
+          <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>#ID</th><th>User</th><th>Post</th><th>Comment</th><th>Date</th><th>Actions</th></tr></thead><tbody id="admin-comments-tbody"></tbody></table></div>
+          <div id="admin-comments-pagination"></div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Admin Stories -->
+    <div class="page" id="page-admin-stories">
+      <div class="admin-shell">
+        <aside class="admin-sidebar">
+          <div class="admin-sidebar-header"><div class="admin-logo-img"><img src="/assets/logo.svg" alt="Rubhi" style="width:36px;height:36px;"></div><span class="sidebar-logo-text">Rubhi Admin</span></div>
+          <nav class="admin-nav">
+            <a class="admin-nav-item" data-page="admin" onclick="Router.navigate('admin')">📊 Dashboard</a>
+            <a class="admin-nav-item" data-page="admin-users" onclick="Router.navigate('admin-users')">👥 Users</a>
+            <a class="admin-nav-item" data-page="admin-posts" onclick="Router.navigate('admin-posts')">🖼 Posts</a>
+            <a class="admin-nav-item" data-page="admin-comments" onclick="Router.navigate('admin-comments')">💬 Comments</a>
+            <a class="admin-nav-item active" data-page="admin-stories" onclick="Router.navigate('admin-stories')">⭕ Stories</a>
+            <a class="admin-nav-item" data-page="admin-messages" onclick="Router.navigate('admin-messages')">✉️ Messages</a>
+            <a class="admin-nav-item" data-page="admin-verification" onclick="Router.navigate('admin-verification')">✅ Verification</a>
+            <a class="admin-nav-item" data-page="admin-reports" onclick="Router.navigate('admin-reports')">🚩 Reports</a>
+            <a class="admin-nav-item" data-page="admin-settings" onclick="Router.navigate('admin-settings')">⚙️ Settings</a>
+          </nav>
+          <div class="admin-sidebar-footer"><button class="admin-nav-item" style="width:100%;text-align:left;border:none;cursor:pointer" onclick="Auth.logout()">🚪 Logout</button><a class="admin-nav-item" onclick="Router.navigate('home')">← Back to App</a></div>
+        </aside>
+        <main class="admin-main">
+          <div class="admin-page-header"><h1 class="admin-page-title">Stories</h1></div>
+          <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>#ID</th><th>Owner</th><th>Preview</th><th>Status</th><th>Created</th><th>Expires</th><th>Actions</th></tr></thead><tbody id="admin-stories-tbody"></tbody></table></div>
+          <div id="admin-stories-pagination"></div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Admin Messages -->
+    <div class="page" id="page-admin-messages">
+      <div class="admin-shell">
+        <aside class="admin-sidebar">
+          <div class="admin-sidebar-header"><div class="admin-logo-img"><img src="/assets/logo.svg" alt="Rubhi" style="width:36px;height:36px;"></div><span class="sidebar-logo-text">Rubhi Admin</span></div>
+          <nav class="admin-nav">
+            <a class="admin-nav-item" data-page="admin" onclick="Router.navigate('admin')">📊 Dashboard</a>
+            <a class="admin-nav-item" data-page="admin-users" onclick="Router.navigate('admin-users')">👥 Users</a>
+            <a class="admin-nav-item" data-page="admin-posts" onclick="Router.navigate('admin-posts')">🖼 Posts</a>
+            <a class="admin-nav-item" data-page="admin-comments" onclick="Router.navigate('admin-comments')">💬 Comments</a>
+            <a class="admin-nav-item" data-page="admin-stories" onclick="Router.navigate('admin-stories')">⭕ Stories</a>
+            <a class="admin-nav-item active" data-page="admin-messages" onclick="Router.navigate('admin-messages')">✉️ Messages</a>
+            <a class="admin-nav-item" data-page="admin-verification" onclick="Router.navigate('admin-verification')">✅ Verification</a>
+            <a class="admin-nav-item" data-page="admin-reports" onclick="Router.navigate('admin-reports')">🚩 Reports</a>
+            <a class="admin-nav-item" data-page="admin-settings" onclick="Router.navigate('admin-settings')">⚙️ Settings</a>
+          </nav>
+          <div class="admin-sidebar-footer"><button class="admin-nav-item" style="width:100%;text-align:left;border:none;cursor:pointer" onclick="Auth.logout()">🚪 Logout</button><a class="admin-nav-item" onclick="Router.navigate('home')">← Back to App</a></div>
+        </aside>
+        <main class="admin-main">
+          <div class="admin-page-header"><h1 class="admin-page-title">Messages</h1></div>
+          <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>#ID</th><th>Sender</th><th>Receiver</th><th>Message</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="admin-msgs-tbody"></tbody></table></div>
+          <div id="admin-msgs-pagination"></div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Admin Verification -->
+    <div class="page" id="page-admin-verification">
+      <div class="admin-shell">
+        <aside class="admin-sidebar">
+          <div class="admin-sidebar-header"><div class="admin-logo-img"><img src="/assets/logo.svg" alt="Rubhi" style="width:36px;height:36px;"></div><span class="sidebar-logo-text">Rubhi Admin</span></div>
+          <nav class="admin-nav">
+            <a class="admin-nav-item" data-page="admin" onclick="Router.navigate('admin')">📊 Dashboard</a>
+            <a class="admin-nav-item" data-page="admin-users" onclick="Router.navigate('admin-users')">👥 Users</a>
+            <a class="admin-nav-item" data-page="admin-posts" onclick="Router.navigate('admin-posts')">🖼 Posts</a>
+            <a class="admin-nav-item" data-page="admin-comments" onclick="Router.navigate('admin-comments')">💬 Comments</a>
+            <a class="admin-nav-item" data-page="admin-stories" onclick="Router.navigate('admin-stories')">⭕ Stories</a>
+            <a class="admin-nav-item" data-page="admin-messages" onclick="Router.navigate('admin-messages')">✉️ Messages</a>
+            <a class="admin-nav-item active" data-page="admin-verification" onclick="Router.navigate('admin-verification')">✅ Verification</a>
+            <a class="admin-nav-item" data-page="admin-reports" onclick="Router.navigate('admin-reports')">🚩 Reports</a>
+            <a class="admin-nav-item" data-page="admin-settings" onclick="Router.navigate('admin-settings')">⚙️ Settings</a>
+          </nav>
+          <div class="admin-sidebar-footer"><button class="admin-nav-item" style="width:100%;text-align:left;border:none;cursor:pointer" onclick="Auth.logout()">🚪 Logout</button><a class="admin-nav-item" onclick="Router.navigate('home')">← Back to App</a></div>
+        </aside>
+        <main class="admin-main">
+          <div class="admin-page-header"><h1 class="admin-page-title">Verification Requests</h1></div>
+          <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>#ID</th><th>User</th><th>Reason</th><th>Document</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="admin-verif-tbody"></tbody></table></div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Admin Reports -->
+    <div class="page" id="page-admin-reports">
+      <div class="admin-shell">
+        <aside class="admin-sidebar">
+          <div class="admin-sidebar-header"><div class="admin-logo-img"><img src="/assets/logo.svg" alt="Rubhi" style="width:36px;height:36px;"></div><span class="sidebar-logo-text">Rubhi Admin</span></div>
+          <nav class="admin-nav">
+            <a class="admin-nav-item" data-page="admin" onclick="Router.navigate('admin')">📊 Dashboard</a>
+            <a class="admin-nav-item" data-page="admin-users" onclick="Router.navigate('admin-users')">👥 Users</a>
+            <a class="admin-nav-item" data-page="admin-posts" onclick="Router.navigate('admin-posts')">🖼 Posts</a>
+            <a class="admin-nav-item" data-page="admin-comments" onclick="Router.navigate('admin-comments')">💬 Comments</a>
+            <a class="admin-nav-item" data-page="admin-stories" onclick="Router.navigate('admin-stories')">⭕ Stories</a>
+            <a class="admin-nav-item" data-page="admin-messages" onclick="Router.navigate('admin-messages')">✉️ Messages</a>
+            <a class="admin-nav-item" data-page="admin-verification" onclick="Router.navigate('admin-verification')">✅ Verification</a>
+            <a class="admin-nav-item active" data-page="admin-reports" onclick="Router.navigate('admin-reports')">🚩 Reports</a>
+            <a class="admin-nav-item" data-page="admin-settings" onclick="Router.navigate('admin-settings')">⚙️ Settings</a>
+          </nav>
+          <div class="admin-sidebar-footer"><button class="admin-nav-item" style="width:100%;text-align:left;border:none;cursor:pointer" onclick="Auth.logout()">🚪 Logout</button><a class="admin-nav-item" onclick="Router.navigate('home')">← Back to App</a></div>
+        </aside>
+        <main class="admin-main">
+          <div class="admin-page-header"><h1 class="admin-page-title">Reports</h1></div>
+          <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>#ID</th><th>Reporter</th><th>Target</th><th>Reason</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="admin-reports-tbody"></tbody></table></div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Admin Settings -->
+    <div class="page" id="page-admin-settings">
+      <div class="admin-shell">
+        <aside class="admin-sidebar">
+          <div class="admin-sidebar-header"><div class="admin-logo-img"><img src="/assets/logo.svg" alt="Rubhi" style="width:36px;height:36px;"></div><span class="sidebar-logo-text">Rubhi Admin</span></div>
+          <nav class="admin-nav">
+            <a class="admin-nav-item" data-page="admin" onclick="Router.navigate('admin')">📊 Dashboard</a>
+            <a class="admin-nav-item" data-page="admin-users" onclick="Router.navigate('admin-users')">👥 Users</a>
+            <a class="admin-nav-item" data-page="admin-posts" onclick="Router.navigate('admin-posts')">🖼 Posts</a>
+            <a class="admin-nav-item" data-page="admin-comments" onclick="Router.navigate('admin-comments')">💬 Comments</a>
+            <a class="admin-nav-item" data-page="admin-stories" onclick="Router.navigate('admin-stories')">⭕ Stories</a>
+            <a class="admin-nav-item" data-page="admin-messages" onclick="Router.navigate('admin-messages')">✉️ Messages</a>
+            <a class="admin-nav-item" data-page="admin-verification" onclick="Router.navigate('admin-verification')">✅ Verification</a>
+            <a class="admin-nav-item" data-page="admin-reports" onclick="Router.navigate('admin-reports')">🚩 Reports</a>
+            <a class="admin-nav-item active" data-page="admin-settings" onclick="Router.navigate('admin-settings')">⚙️ Settings</a>
+          </nav>
+          <div class="admin-sidebar-footer"><button class="admin-nav-item" style="width:100%;text-align:left;border:none;cursor:pointer" onclick="Auth.logout()">🚪 Logout</button><a class="admin-nav-item" onclick="Router.navigate('home')">← Back to App</a></div>
+        </aside>
+        <main class="admin-main">
+          <div class="admin-page-header"><h1 class="admin-page-title">Platform Settings</h1></div>
+          <div class="card card-padded" style="max-width:560px">
+            <div class="admin-setting-row"><div><div class="admin-setting-label">User Registrations</div><div class="admin-setting-desc">Allow new users to register</div></div><label class="toggle-switch"><input type="checkbox" id="setting-registrations"><span class="toggle-slider"></span></label></div>
+            <div class="divider"></div>
+            <div class="admin-setting-row"><div><div class="admin-setting-label">Stories</div><div class="admin-setting-desc">Allow users to post stories</div></div><label class="toggle-switch"><input type="checkbox" id="setting-stories"><span class="toggle-slider"></span></label></div>
+            <div class="divider"></div>
+            <div class="admin-setting-row"><div><div class="admin-setting-label">Direct Messaging</div><div class="admin-setting-desc">Allow users to send messages</div></div><label class="toggle-switch"><input type="checkbox" id="setting-messaging"><span class="toggle-slider"></span></label></div>
+            <div class="divider"></div>
+            <div class="admin-setting-row"><div><div class="admin-setting-label">Verification Requests</div><div class="admin-setting-desc">Allow users to request verification</div></div><label class="toggle-switch"><input type="checkbox" id="setting-verification"><span class="toggle-slider"></span></label></div>
+            <div class="divider"></div>
+            <div class="admin-setting-row"><div><div class="admin-setting-label">Private Accounts</div><div class="admin-setting-desc">Allow users to make accounts private</div></div><label class="toggle-switch"><input type="checkbox" id="setting-private"><span class="toggle-slider"></span></label></div>
+            <div class="divider"></div>
+            <div class="admin-setting-row"><div><div class="admin-setting-label">Max Upload Size (MB)</div><div class="admin-setting-desc">Maximum file upload size per file</div></div><input type="number" id="setting-upload-size" class="form-input" style="width:100px" min="1" max="200"></div>
+            <div class="mt-6"><button class="btn btn-primary" onclick="saveAdminSettings()">Save Settings</button></div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+
+  <!-- ============================================================
+       MOBILE BOTTOM NAV
+       ============================================================ -->
+  <nav class="mobile-nav" id="mobile-nav" style="display:none">
+    <div class="mobile-nav-inner">
+      <div class="mobile-nav-item" data-page="home" onclick="Router.navigate('home')">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <div class="mobile-nav-item" data-page="search" onclick="Router.navigate('search')">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <div class="mobile-nav-item" data-page="create-post" onclick="Router.navigate('create-post')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      </div>
+      <div class="mobile-nav-item" data-page="notifications" onclick="Router.navigate('notifications')" style="position:relative">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="mobile-nav-badge" data-notif-badge style="display:none"></span>
+      </div>
+      <div class="mobile-nav-item" data-page="profile" onclick="Router.navigate('profile',{username:Auth.user?.username})">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       MODALS
+       ============================================================ -->
+
+  <!-- Profile Post Modal (full post view from grid) -->
+  <div class="modal-overlay" id="profile-post-modal">
+    <div class="modal modal-wide" style="max-width:680px;overflow:hidden">
+      <div id="profile-post-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Image Crop Modal -->
+  <div class="modal-overlay" id="crop-image-modal">
+    <div class="modal" style="max-width:580px;max-height:92vh;display:flex;flex-direction:column">
+      <div class="modal-header">
+        <span class="modal-title">Crop Image</span>
+        <button class="btn-icon btn-ghost" onclick="RubhiUtils.closeModal('crop-image-modal')">✕</button>
+      </div>
+      <!-- Ratio selector -->
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 18px;border-bottom:1px solid var(--border)">
+        <span style="font-size:11px;color:var(--white-30);letter-spacing:.08em;text-transform:uppercase;flex-shrink:0">Ratio</span>
+        <button type="button" class="btn btn-secondary btn-sm ratio-btn" data-ratio="1"    onclick="cropSetAspectRatio('1')"    style="flex:1;text-align:center">1:1<br><span style="font-size:10px;opacity:.6">Square</span></button>
+        <button type="button" class="btn btn-secondary btn-sm ratio-btn ratio-active" data-ratio="4/5"  onclick="cropSetAspectRatio('4/5')"  style="flex:1;text-align:center">4:5<br><span style="font-size:10px;opacity:.7">Portrait</span></button>
+        <button type="button" class="btn btn-secondary btn-sm ratio-btn" data-ratio="16/9" onclick="cropSetAspectRatio('16/9')" style="flex:1;text-align:center">16:9<br><span style="font-size:10px;opacity:.6">Wide</span></button>
+        <button type="button" class="btn btn-secondary btn-sm ratio-btn" data-ratio="free" onclick="cropSetAspectRatio('free')" style="flex:1;text-align:center">Free<br><span style="font-size:10px;opacity:.6">Custom</span></button>
+      </div>
+      <!-- Cropper area -->
+      <div style="flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--black-4);min-height:320px;padding:12px">
+        <img id="crop-image" style="max-width:100%;max-height:440px;display:block">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="RubhiUtils.closeModal('crop-image-modal')">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="cropAndSave()">✓ Apply Crop</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Chat Modal -->
+  <div class="modal-overlay" id="new-chat-modal">
+    <div class="modal" style="max-width:420px">
+      <div class="modal-header">
+        <span class="modal-title">New Message</span>
+        <button class="btn-icon btn-ghost" onclick="RubhiUtils.closeModal('new-chat-modal')">✕</button>
+      </div>
+      <div class="modal-body" style="padding:12px 16px">
+        <input id="new-chat-search" type="text" class="form-input" placeholder="Search people…" autocomplete="off">
+        <div id="new-chat-results" style="max-height:360px;overflow-y:auto;margin-top:12px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Crop section is inside edit-profile-modal -->
+
+  <!-- Comments Modal -->
+  <div class="modal-overlay" id="comments-modal">
+    <div class="modal modal-wide">
+      <div class="modal-header">
+        <span class="modal-title">Comments</span>
+        <button class="btn-icon btn-ghost" onclick="RubhiUtils.closeModal('comments-modal')">✕</button>
+      </div>
+      <div id="comments-list" style="max-height:400px;overflow-y:auto;padding:var(--sp-4) var(--sp-6)"></div>
+      <div style="padding:var(--sp-4) var(--sp-6);border-top:1px solid var(--border);display:flex;gap:var(--sp-3);align-items:center">
+        <input id="comments-input" type="text" class="form-input" placeholder="Add a comment…" style="flex:1">
+        <button id="comments-submit" class="btn btn-primary btn-sm">Post</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div class="modal-overlay" id="edit-profile-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Edit Profile</span>
+        <button class="btn-icon btn-ghost" onclick="RubhiUtils.closeModal('edit-profile-modal')">✕</button>
+      </div>
+      <div class="modal-body" style="display:flex;flex-direction:column;gap:16px">
+        <!-- Avatar picker -->
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+          <div id="ep-avatar-preview" style="width:80px;height:80px;border-radius:50%;background:var(--surface-3);overflow:hidden;cursor:pointer;border:2px solid var(--accent)"
+               onclick="document.getElementById('ep-profile-pic').click()"></div>
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('ep-profile-pic').click()">Change Photo</button>
+          <input id="ep-profile-pic" type="file" accept="image/jpeg,image/png,image/webp" style="display:none"
+                 onchange="EditProfile.handlePicSelect(this)">
+        </div>
+        <!-- Crop section -->
+        <div id="crop-section" style="display:none;flex-direction:column;align-items:center;gap:12px;background:var(--surface-2);border-radius:16px;padding:16px">
+          <p style="font-size:12px;color:var(--white-50);text-align:center;margin:0">
+            <strong style="color:var(--accent)">Drag</strong> to reposition · <strong style="color:var(--accent)">Scroll</strong> or use buttons to zoom
+          </p>
+          <div style="position:relative;width:280px;height:280px;border-radius:50%;overflow:hidden;cursor:grab;flex-shrink:0;box-shadow:0 0 0 3px var(--accent)">
+            <canvas id="crop-canvas" style="display:block;width:280px;height:280px;cursor:grab"></canvas>
+          </div>
+          <!-- Zoom controls -->
+          <div style="display:flex;align-items:center;gap:12px">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="EditProfile.zoomOut()" style="width:36px;height:36px;padding:0;font-size:20px;border-radius:50%">−</button>
+            <span style="font-size:12px;color:var(--white-30)">Zoom</span>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="EditProfile.zoomIn()" style="width:36px;height:36px;padding:0;font-size:20px;border-radius:50%">+</button>
+          </div>
+          <div style="display:flex;gap:10px">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="EditProfile.cancelCrop()">Cancel</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="EditProfile.applyCrop()">✓ Use This Crop</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input id="ep-fullname" type="text" class="form-input" maxlength="100">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input id="ep-username" type="text" class="form-input" maxlength="30">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bio</label>
+          <textarea id="ep-bio" class="form-input form-textarea" maxlength="150" rows="3" placeholder="Tell us about yourself…"></textarea>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:14px;font-weight:500">Private Account</div>
+            <div style="font-size:12px;color:var(--white-30)">Only approved followers see your posts</div>
+          </div>
+          <label class="toggle-switch"><input type="checkbox" id="ep-private"><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="RubhiUtils.closeModal('edit-profile-modal')">Cancel</button>
+        <button id="ep-save-btn" class="btn btn-primary btn-sm" onclick="EditProfile.save()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Follow List Modal -->
+  <div class="modal-overlay" id="follow-list-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title" id="follow-list-title">Followers</span>
+        <button class="btn-icon btn-ghost" onclick="RubhiUtils.closeModal('follow-list-modal')">✕</button>
+      </div>
+      <div id="follow-list-content" style="max-height:420px;overflow-y:auto;padding:var(--sp-3) 0"></div>
+    </div>
+  </div>
+
+  <!-- Verification Request Modal -->
+  <div class="modal-overlay" id="verification-request-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Request Verification</span>
+        <button class="btn-icon btn-ghost" onclick="RubhiUtils.closeModal('verification-request-modal')">✕</button>
+      </div>
+      <div class="modal-body" style="display:flex;flex-direction:column;gap:var(--sp-4)">
+        <p class="text-sm text-muted">Explain why you should receive a verified badge. You may also upload a supporting document.</p>
+        <div class="form-group">
+          <label class="form-label">Reason</label>
+          <textarea id="verif-reason" class="form-input form-textarea" rows="4" placeholder="I am a public figure / creator / brand because…"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Supporting Document (Optional)</label>
+          <input id="verif-doc" type="file" class="form-input" accept="image/jpeg,image/png,image/webp,application/pdf">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="RubhiUtils.closeModal('verification-request-modal')">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="submitVerificationRequest()">Submit Request</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin User View Modal -->
+  <div class="modal-overlay" id="admin-user-modal">
+    <div class="modal modal-wide">
+      <div class="modal-header">
+        <span class="modal-title">User Details</span>
+        <button class="btn-icon btn-ghost" onclick="RubhiUtils.closeModal('admin-user-modal')">✕</button>
+      </div>
+      <div class="modal-body" id="admin-user-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Share Post Modal -->
+  <div class="modal-overlay" id="share-post-modal">
+    <div class="modal" style="max-width:460px">
+      <div class="modal-header">
+        <span class="modal-title">Share Post</span>
+        <button class="btn-icon btn-ghost" onclick="RubhiUtils.closeModal('share-post-modal')">✕</button>
+      </div>
+
+      <!-- Post preview strip -->
+      <div style="display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.03)">
+        <div style="width:36px;height:36px;border-radius:8px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--accent)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div id="share-post-preview-user" style="font-size:13px;font-weight:600;color:var(--accent)"></div>
+          <div id="share-post-preview-caption" style="font-size:12px;color:var(--white-30);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:320px"></div>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div style="padding:12px 16px;border-bottom:1px solid var(--border)">
+        <div style="position:relative">
+          <svg style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--white-30);pointer-events:none" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="share-search-input" type="text" class="form-input" placeholder="Search followers & following…" style="padding-left:34px;height:38px;font-size:13px">
+        </div>
+      </div>
+
+      <!-- People list -->
+      <div id="share-people-list" style="max-height:320px;overflow-y:auto;padding:8px 4px"></div>
+
+      <!-- Footer -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border)">
+        <span id="share-selected-count" style="font-size:12px;color:var(--accent);font-weight:500"></span>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-secondary btn-sm" onclick="RubhiUtils.closeModal('share-post-modal')">Cancel</button>
+          <button id="share-send-btn" class="btn btn-primary btn-sm" disabled onclick="SharePost.send()">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Modal -->
+  <div class="modal-overlay" id="confirm-modal-overlay">
+    <div class="modal modal-sm">
+      <div class="modal-body" style="text-align:center;padding:var(--sp-8) var(--sp-6)">
+        <p id="confirm-modal-msg" style="font-size:var(--text-base);color:var(--white-90);margin-bottom:var(--sp-6)"></p>
+        <div class="flex gap-3 justify-center">
+          <button class="btn btn-secondary btn-sm" onclick="RubhiUtils.closeModal('confirm-modal-overlay')">Cancel</button>
+          <button id="confirm-modal-confirm" class="btn btn-danger btn-sm">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Story Viewer Overlay -->
+  <div class="story-viewer-overlay" id="story-viewer-overlay">
+    <div class="story-viewer">
+      <div class="story-progress-bar" id="story-progress-bar"></div>
+      <div class="story-header-bar">
+        <div class="story-header-user">
+          <div id="story-header-avatar"></div>
+          <div>
+            <div class="story-user-name" id="story-user-name"></div>
+            <div class="story-time-ago" id="story-time-ago"></div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button id="story-delete-btn" class="btn btn-ghost btn-sm" style="display:none;color:var(--red);font-size:12px;padding:4px 10px">Delete</button>
+          <button class="story-close-btn" onclick="StoryViewer.close()">✕</button>
+        </div>
+      </div>
+      <!-- Media container (swapped dynamically) -->
+      <div id="story-media-container" style="width:100%;height:100%;position:absolute;top:0;left:0">
+        <img id="story-media" class="story-media" src="" alt="">
+      </div>
+      <!-- Text overlay -->
+      <div id="story-text-overlay" style="display:none;position:absolute;bottom:80px;left:0;right:0;justify-content:center;align-items:center;z-index:3;padding:0 20px">
+        <div style="background:rgba(0,0,0,0.65);color:white;font-size:18px;font-weight:600;padding:10px 20px;border-radius:10px;text-align:center;max-width:90%;word-break:break-word;backdrop-filter:blur(4px)"></div>
+      </div>
+      <div class="story-nav-zone story-nav-prev" onclick="StoryViewer.prevStory()"></div>
+      <div class="story-nav-zone story-nav-next" onclick="StoryViewer.nextStory()"></div>
+    </div>
+  </div>
+
+  <!-- Story Create Modal -->
+  <div class="modal-overlay" id="story-create-modal">
+    <div class="modal" style="max-width:400px">
+      <div class="modal-header">
+        <span class="modal-title">New Story</span>
+        <button class="btn-icon btn-ghost" onclick="RubhiUtils.closeModal('story-create-modal')">✕</button>
+      </div>
+      <div class="modal-body" style="display:flex;flex-direction:column;gap:16px">
+        <!-- Preview area -->
+        <div id="story-preview-area" style="min-height:200px;background:var(--surface-2);border-radius:12px;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center"
+             onclick="document.getElementById('story-file-input').click()"></div>
+        <input id="story-file-input" type="file" accept="image/jpeg,image/png,image/webp,video/mp4" style="display:none" onchange="StoryCreator.handleFileSelect(this)">
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('story-file-input').click()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          Choose Photo / Video
+        </button>
+        <div class="form-group">
+          <label class="form-label">Add Text (optional)</label>
+          <input id="story-text-input" type="text" class="form-input" placeholder="Type something on your story…" maxlength="120">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="RubhiUtils.closeModal('story-create-modal')">Cancel</button>
+        <button id="story-post-btn" class="btn btn-primary btn-sm" onclick="StoryCreator.post()">Share Story</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- ============================================================
+       SCRIPTS
+       ============================================================ -->
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+
+  <!-- Mouse glow effect — touches nothing except CSS custom properties -->
+  <script>
+    (function() {
+      const glow = document.createElement('div');
+      glow.id = 'mouse-glow';
+      glow.style.cssText = `
+        position: fixed;
+        width: 480px;
+        height: 480px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        background: radial-gradient(circle, rgba(181,190,78,0.10) 0%, rgba(181,190,78,0.04) 35%, transparent 70%);
+        transition: opacity 0.3s ease;
+        opacity: 0;
+        mix-blend-mode: screen;
+      `;
+      document.body.appendChild(glow);
+
+      let raf;
+      let cx = -9999, cy = -9999;
+
+      document.addEventListener('mousemove', (e) => {
+        cx = e.clientX;
+        cy = e.clientY;
+        glow.style.opacity = '1';
+        if (!raf) {
+          raf = requestAnimationFrame(() => {
+            glow.style.left = cx + 'px';
+            glow.style.top  = cy + 'px';
+            raf = null;
+          });
+        }
+      });
+
+      document.addEventListener('mouseleave', () => {
+        glow.style.opacity = '0';
+      });
+    })();
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+  <script src="/js/router.js"></script>
+  <script src="/js/pages/post-card.js"></script>
+  <script src="/js/pages/story.js"></script>
+  <script src="/js/pages/login.js"></script>
+  <script src="/js/pages/register.js"></script>
+  <script src="/js/pages/home.js"></script>
+  <script src="/js/pages/create-post.js"></script>
+  <script src="/js/pages/profile.js"></script>
+  <script src="/js/pages/search.js"></script>
+  <script src="/js/pages/notifications.js"></script>
+  <script src="/js/pages/messages.js"></script>
+  <script src="/js/pages/admin.js"></script>
+
+  <script>
+    // ---- Verification submit ----
+    async function submitVerificationRequest() {
+      const reason = document.getElementById('verif-reason').value.trim();
+      const doc    = document.getElementById('verif-doc').files[0];
+      if (!reason) { RubhiUtils.showToast('Please provide a reason.','warning'); return; }
+      const form = new FormData();
+      form.append('reason', reason);
+      if (doc) form.append('document', doc);
+      const res = await api.submitVerification(form);
+      if (res.ok) { RubhiUtils.showToast('Request submitted.','success'); RubhiUtils.closeModal('verification-request-modal'); }
+      else RubhiUtils.showToast(res.data.error || 'Failed to submit.','error');
+    }
+
+    // ---- Edit profile pic preview ----
+    function previewEpPic(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const preview = document.getElementById('ep-avatar-preview');
+        preview.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover">`;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ---- Init sidebar user info ----
+    function initSidebarUser() {
+      const user = Auth.user;
+      if (!user) return;
+      const nameEl  = document.getElementById('sidebar-name');
+      const unameEl = document.getElementById('sidebar-uname');
+      const avatarWrap = document.getElementById('sidebar-avatar-wrap');
+      if (nameEl)  nameEl.textContent  = user.full_name;
+      if (unameEl) unameEl.textContent = '@' + user.username;
+      if (avatarWrap) avatarWrap.innerHTML = RubhiUtils.avatarHtml(user, 'avatar-sm');
+    }
+
+    // ---- Notification polling ----
+    async function pollNotifications() {
+      if (!Auth.isLoggedIn()) return;
+      const res = await api.getNotifications();
+      if (res.ok) updateNotifBadge(res.data.unread_count);
+    }
+
+    // ---- Bootstrap ----
+    document.addEventListener('DOMContentLoaded', async () => {
+      Auth.init();
+      if (Auth.isLoggedIn()) {
+        await Auth.refresh();
+        initSidebarUser();
+        pollNotifications();
+        setInterval(pollNotifications, 30000);
+      }
+      Router.init();
+    });
+  </script>
+</body>
+</html>
